@@ -5,7 +5,11 @@ import numpy as np
 
 st.title("Smart Surveillance Object Detection")
 
-model = YOLO("yolov8n.pt")
+@st.cache_resource
+def load_model():
+    return YOLO("yolov8n.pt")
+
+model = load_model()
 
 uploaded_file = st.file_uploader("Upload Image", type=["jpg","png","jpeg"])
 
@@ -17,4 +21,5 @@ if uploaded_file:
     results = model(img)
 
     output = results[0].plot()
+
     st.image(output, caption="Detected Output")
