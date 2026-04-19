@@ -1,13 +1,14 @@
 import streamlit as st
-from ultralytics import YOLO
+import torch
 from PIL import Image
 import numpy as np
 
-st.title("Smart Surveillance Object Detection")
+st.title("Smart Surveillance Object Detection (YOLO-based)")
 
 @st.cache_resource
 def load_model():
-    return YOLO("yolov8n.pt")
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+    return model
 
 model = load_model()
 
@@ -17,9 +18,6 @@ if uploaded_file:
     image = Image.open(uploaded_file)
     st.image(image, caption="Input Image")
 
-    img = np.array(image)
-    results = model(img)
+    results = model(image)
 
-    output = results[0].plot()
-
-    st.image(output, caption="Detected Output")
+    st.image(results.render()[0], caption="Detected Output")
